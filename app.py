@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, Response, jsonify
+import json
 
 app = Flask(__name__)
 
@@ -40,7 +41,8 @@ def getRates():
     if request.method == 'GET':
         return jsonify(rates)
     if request.method == 'PUT':
-        return "Rates PUT"
+        rates.append(json.loads(request.data))
+        return Response('Rate successfully added.', 200)
 
 @app.route("/price")
 def getPrices():

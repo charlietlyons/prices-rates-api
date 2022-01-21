@@ -1,5 +1,5 @@
 from flask import Flask, request, Response, jsonify
-import json
+import json, datetime
 
 app = Flask(__name__)
 
@@ -41,8 +41,14 @@ def getRates():
     if request.method == 'GET':
         return jsonify(rates)
     if request.method == 'PUT':
-        rates.append(json.loads(request.data))
-        return Response('Rate successfully added.', 200)
+        data = json.loads(request.data)
+        timeFrame = data['times'].split('-')
+
+        if timeFrame[1] < timeFrame[0]:
+            return Response('Cannot add rates. Time ranges must exist within the same day.', 503)
+        else:
+            rates.append(data)
+            return Response('Rate successfully added.', 200)
 
 @app.route("/price")
 def getPrices():
@@ -50,4 +56,4 @@ def getPrices():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

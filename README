@@ -1,1 +1,3 @@
-To run docker container, run: `./run-docker.sh`
+To run locally, simply run: `flask run`
+
+To run with docker container, run: `./run-docker.sh`

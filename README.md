@@ -1,8 +1,8 @@
 # Setup
 ## To run locally:
--Install Python
--Enter `pip install flask` in CLI
--Enter `flask run` or `python -m flask run` in CLI (whichever works)
+- Install Python
+- Enter `pip install flask` in CLI
+- Enter `flask run` or `python -m flask run` in CLI (whichever works)
 
 To run with docker container, run: `./run-docker.sh`
 

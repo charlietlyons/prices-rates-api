@@ -1,5 +1,5 @@
 from time import perf_counter, time
-from flask import jsonify, Flask, request, Response, g as context
+from flask import jsonify, Flask, request, Response, render_template, g as context
 import json, datetime
 
 def create_app():
@@ -48,6 +48,10 @@ def create_app():
                 metricsInfo['calls'] = metricsInfo['calls'] + 1
 
         return response
+
+    @app.route('/docs')
+    def getSwagger():
+        return render_template('swaggerui.html')
 
     @app.route("/rates", methods=['GET', 'PUT'])
     def getRates():

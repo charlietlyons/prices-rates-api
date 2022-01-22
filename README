@@ -5,6 +5,8 @@ To run locally:
 
 To run with docker container, run: `./run-docker.sh`
 
+You can view Swagger by accessing `<host>:5000/docs`
+
 Postman Collection: https://www.getpostman.com/collections/a8493c1ce129a98bc554
 
 A metrics endpoint is available as well. Just GET to `<host>:5000/metrics/<endpoint>`

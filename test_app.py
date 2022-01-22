@@ -36,3 +36,14 @@ def test_get_price(client):
     response = client.get('/price', query_string="start=2015-07-04T07:00:00+05:00&end=2015-07-04T20:00:00+05:00")
     assert response.status_code == 503
 
+def test_get_metrics(client):
+    def make_call_and_assert_times(n):
+        client.get('/rates')
+        response = client.get('/metrics/rates')
+        assert response.status_code == 200
+        assert json.loads(response.data)['calls'] == n
+
+    make_call_and_assert_times(1)
+    make_call_and_assert_times(2)
+    make_call_and_assert_times(3)
+

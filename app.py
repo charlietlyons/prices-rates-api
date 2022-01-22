@@ -1,10 +1,24 @@
-from flask import Flask, request, Response, jsonify
+from time import perf_counter, time
+from flask import jsonify, Flask, request, Response, g as context
 import json, datetime
 
 def create_app():
     app = Flask(__name__)
 
     rates = json.load(open('rates.json'))['rates']
+    metrics = [
+        {
+            "endpoint": '/rates',
+            "avg_ms": 0.0,
+            "calls": 0
+        },
+        {
+            "endpoint": '/price',
+            "avg_ms": 0.0,
+            "calls": 0
+        }
+    ]
+
     def isActiveWeekday(weekday, rate):
         daysOfTheWeek = {
             'mon': 0,
@@ -19,6 +33,21 @@ def create_app():
             if daysOfTheWeek[day] == weekday:
                 return True
         return False
+
+    @app.before_request
+    def before_request():
+        context.start = perf_counter()
+
+    @app.after_request
+    def after_request(response):
+        total_time = perf_counter() - context.start
+
+        for metricsInfo in metrics:
+            if request.path == metricsInfo['endpoint']:
+                metricsInfo['avg_ms'] = round((metricsInfo['avg_ms'] + (total_time*1000))/2, 4)
+                metricsInfo['calls'] = metricsInfo['calls'] + 1
+
+        return response
 
     @app.route("/rates", methods=['GET', 'PUT'])
     def getRates():
@@ -53,6 +82,13 @@ def create_app():
                 raise Exception('No available rates')
         except:
             return Response('unavailable', 503)
+
+    @app.route("/metrics/<endpoint>", methods=["GET"])
+    def getMetrics(endpoint):
+        if endpoint == 'rates':
+            return jsonify(metrics[0])
+        if endpoint == 'price':
+            return jsonify(metrics[1])
     
     return app
 
